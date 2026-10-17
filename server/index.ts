@@ -74,6 +74,9 @@ async function headFor(url: string) {
   } else if (pathname === "/wholesale") {
     title = `Wholesale | ${s.storeName}`;
     description = s.wholesaleIntro;
+  } else if (pathname === "/wishlist" || pathname === "/compare") {
+    title = `${pathname === "/wishlist" ? "Wishlist" : "Compare"} | ${s.storeName}`;
+    noindex = true;
   } else if (pathname === "/contact-us") {
     title = `Contact Us | ${s.storeName}`;
   } else if (pathname !== "/") {
@@ -132,12 +135,12 @@ async function legacyRedirect(pathname: string): Promise<string | null> {
     return c ? `/shop/${c.slug}` : "/shop";
   }
   if (first === "effects") return `/shop?strain=${encodeURIComponent(last.charAt(0).toUpperCase() + last.slice(1))}`;
-  if (["my-account", "wishlist", "compare"].includes(first)) return "/track";
+  if (first === "my-account") return "/track";
   if (first === "cart") return "/shop";
   if (first === "faq") return "/faqs";
   if (first === "blog" && parts[1] === "page") return "/blog";
   if (parts.length === 1) {
-    const known = ["shop", "checkout", "track", "lab-results", "blog", "wholesale", "contact-us"];
+    const known = ["shop", "checkout", "track", "lab-results", "blog", "wholesale", "contact-us", "wishlist", "compare"];
     if (known.includes(first)) return null;
     const [pg] = await db.select({ id: schema.pages.id }).from(schema.pages).where(eq(schema.pages.slug, first)).limit(1);
     if (pg) return null;

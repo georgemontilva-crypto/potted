@@ -453,4 +453,23 @@ export const storeRouter = router({
       ]);
       return { ok: true };
     }),
+
+  /* ───────────── Lista de deseos y comparador ───────────── */
+
+  productsByIds: publicProcedure
+    .input(z.object({ ids: z.array(z.number().int()).max(60) }))
+    .query(async ({ input }) => {
+      const cards = await listProductCards({ ids: input.ids, limit: 60 });
+      // Se respeta el orden en que el visitante los agregó.
+      return input.ids.flatMap((id) => cards.filter((c) => c.id === id));
+    }),
+
+  compare: publicProcedure.input(z.object({ ids: z.array(z.number().int()).max(4) })).query(async ({ input }) => {
+    const out = [];
+    for (const id of input.ids) {
+      const p = await getProductDetail(eq(products.id, id));
+      if (p) out.push(p);
+    }
+    return out;
+  }),
 });

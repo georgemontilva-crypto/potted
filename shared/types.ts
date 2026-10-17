@@ -360,6 +360,8 @@ export const RESERVED_SLUGS = [
   "blog",
   "wholesale",
   "contact-us",
+  "wishlist",
+  "compare",
   "brand",
   "seed",
   "wp-content",

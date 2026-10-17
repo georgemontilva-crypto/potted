@@ -6,6 +6,7 @@ import { useMoney, useShop } from "@/lib/shop";
 import { cart } from "@/lib/cart";
 import { ProductCard, NoPhoto } from "@/components/ProductCard";
 import { QuantityStepper } from "@/components/CartDrawer";
+import { CompareButton, WishButton } from "@/components/ListButtons";
 import { Empty, Loading, SButton, SLink, StrainTag, strainColor } from "@/components/store";
 import { cx } from "@/components/ui";
 
@@ -174,6 +175,10 @@ export default function Product() {
                   Sold out — we’re restocking soon.
                 </p>
               )}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <WishButton id={p.id} name={p.name} variant="pill" />
+              <CompareButton id={p.id} name={p.name} variant="pill" />
             </div>
             {available > 0 && available <= 5 && (
               <p className="mt-3 text-[14px] font-semibold text-cherry">Only {available} left</p>

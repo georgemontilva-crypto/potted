@@ -78,7 +78,7 @@ export default function Shop() {
             <SSelect
               value={sort}
               onChange={(e) => navigate(withParams(base, { sort: e.target.value === "destacados" ? "" : e.target.value }))}
-              className="w-[200px]"
+              className="w-[150px] sm:w-[200px]"
               aria-label="Sort products"
             >
               {SORTS.map(([k, label]) => (

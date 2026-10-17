@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useSearch } from "wouter";
 import { AnimatePresence, motion } from "motion/react";
-import { Menu, Search, ShoppingBag, X } from "lucide-react";
+import { ArrowLeftRight, ChevronDown, Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { imageFor, useMoney, useShop } from "@/lib/shop";
 import { cart, useCart } from "@/lib/cart";
+import { compare, wishlist } from "@/lib/lists";
 import { trpc } from "@/lib/trpc";
 import { CartDrawer } from "./CartDrawer";
 import { FlyToCart } from "./FlyToCart";
@@ -34,19 +35,98 @@ function useNavLinks() {
   const shop = useShop()!;
   const pages = shop.pages.filter((p) => p.showInNav);
   return {
+    categories: shop.categories.map((c) => ({ label: c.name, href: `/shop/${c.slug}` })),
+    effects: shop.strains.map((s) => ({ label: s, href: `/shop?strain=${encodeURIComponent(s)}` })),
     main: [
       { label: "Shop all", href: "/shop" },
-      ...shop.categories.slice(0, 3).map((c) => ({ label: c.name, href: `/shop/${c.slug}` })),
       { label: "Lab Results", href: "/lab-results" },
       ...(shop.hasBlog ? [{ label: "Blog", href: "/blog" }] : []),
     ],
     more: [
       ...pages.map((p) => ({ label: p.title, href: `/${p.slug}` })),
       { label: "Wholesale", href: "/wholesale" },
+      { label: "Wishlist", href: "/wishlist" },
+      { label: "Compare", href: "/compare" },
       { label: "Contact", href: "/contact-us" },
       { label: "Track your order", href: "/track" },
     ],
   };
+}
+
+/** Menú desplegable del encabezado (se abre al pasar el mouse o al tocar). */
+function NavMenu({ label, items, active }: { label: string; items: { label: string; href: string }[]; active: boolean }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLLIElement>(null);
+  const [path] = useLocation();
+  useEffect(() => setOpen(false), [path]);
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+  if (items.length === 0) return null;
+  return (
+    <li ref={ref} className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        className={cx(
+          "inline-flex items-center gap-1 rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors hover:bg-paper-2",
+          (active || open) && "bg-paper-2",
+        )}
+      >
+        {label}
+        <ChevronDown className={cx("size-4 transition-transform duration-200", open && "rotate-180")} aria-hidden />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="absolute left-0 top-full z-50 pt-2"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18 }}
+          >
+            <ul className="min-w-[220px] rounded-[20px] bg-paper p-2 shadow-sheet ring-1 ring-paper-3">
+              {items.map((it) => (
+                <li key={it.href}>
+                  <Link href={it.href} className="block rounded-[14px] px-4 py-2.5 text-[15px] font-medium transition-colors hover:bg-paper-2">
+                    {it.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </li>
+  );
+}
+
+/** Ícono del encabezado con su contador. */
+function CountIcon({ href, label, count, children, className }: { href: string; label: string; count: number; children: ReactNode; className?: string }) {
+  return (
+    <Link
+      href={href}
+      aria-label={count > 0 ? `${label}, ${count} items` : label}
+      title={label}
+      className={cx("relative grid size-11 place-items-center rounded-full transition-colors hover:bg-paper-2", className)}
+    >
+      {children}
+      {count > 0 && (
+        <span className="absolute right-0.5 top-0.5 grid h-[19px] min-w-[19px] place-items-center rounded-full bg-sky px-1 text-[11px] font-bold leading-none text-navy">
+          {count}
+        </span>
+      )}
+    </Link>
+  );
 }
 
 /* ───────────── Búsqueda ───────────── */
@@ -156,6 +236,9 @@ function Header() {
   const { count } = useCart();
   const links = useNavLinks();
   const [path] = useLocation();
+  const search_ = useSearch();
+  const wishIds = wishlist.use();
+  const compareIds = compare.use();
   const [menu, setMenu] = useState(false);
   const [search, setSearch] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -176,7 +259,7 @@ function Header() {
     };
   }, [menu]);
 
-  const active = (href: string) => (href === "/shop" ? path === "/shop" : path.startsWith(href));
+  const active = (href: string) => path.startsWith(href);
 
   return (
     <>
@@ -189,7 +272,18 @@ function Header() {
         <nav aria-label="Main" className="wrap flex h-[72px] items-center gap-4">
           <Brand />
           <ul className="mx-auto hidden items-center gap-1 xl:flex">
-            {links.main.map((l) => (
+            <li>
+              <Link
+                href="/shop"
+                aria-current={path === "/shop" && !search_ ? "page" : undefined}
+                className={cx("rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors hover:bg-paper-2", path === "/shop" && !search_ && "bg-paper-2")}
+              >
+                Shop all
+              </Link>
+            </li>
+            <NavMenu label="Categories" items={links.categories} active={path.startsWith("/shop/")} />
+            <NavMenu label="Effects" items={links.effects} active={search_.includes("strain=")} />
+            {links.main.slice(1).map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
@@ -216,6 +310,12 @@ function Header() {
             >
               <Search className="size-[20px]" strokeWidth={1.9} />
             </button>
+            <CountIcon href="/wishlist" label="Wishlist" count={wishIds.length}>
+              <Heart className="size-[20px]" strokeWidth={1.9} />
+            </CountIcon>
+            <CountIcon href="/compare" label="Compare" count={compareIds.length} className="hidden sm:grid">
+              <ArrowLeftRight className="size-[19px]" strokeWidth={1.9} />
+            </CountIcon>
             <button
               type="button"
               aria-label={count > 0 ? `Open cart, ${count} items` : "Open cart"}
@@ -275,7 +375,7 @@ function Header() {
               </button>
             </div>
             <ul className="wrap mt-6 flex flex-col">
-              {links.main.map((l, i) => (
+              {[{ label: "Shop all", href: "/shop" }, ...links.categories, ...links.main.slice(1)].map((l, i) => (
                 <motion.li
                   key={l.href}
                   initial={{ opacity: 0, x: -12 }}
@@ -288,6 +388,18 @@ function Header() {
                 </motion.li>
               ))}
             </ul>
+            {links.effects.length > 0 && (
+              <div className="wrap mt-6">
+                <p className="text-[14px] font-semibold text-navy-2">Shop by effect</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {links.effects.map((l) => (
+                    <Link key={l.href} href={l.href} className="inline-flex h-10 items-center rounded-full bg-paper-2 px-4 text-[15px] font-medium">
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
             <ul className="wrap mt-8 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-paper-3 pt-6">
               {links.more.map((l) => (
                 <li key={l.href}>

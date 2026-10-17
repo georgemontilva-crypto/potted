@@ -13,6 +13,7 @@ import Page from "./pages/Page";
 import LabResults from "./pages/LabResults";
 import { BlogList, BlogPost } from "./pages/Blog";
 import { Contact, Wholesale } from "./pages/Forms";
+import { Compare, Wishlist } from "./pages/Lists";
 
 const AdminApp = lazy(() => import("./admin/AdminApp"));
 
@@ -59,6 +60,8 @@ export default function App() {
         <Route path="/blog/:slug" component={BlogPost} />
         <Route path="/wholesale" component={Wholesale} />
         <Route path="/contact-us" component={Contact} />
+        <Route path="/wishlist" component={Wishlist} />
+        <Route path="/compare" component={Compare} />
         <Route path="/:slug" component={Page} />
         <Route component={Page} />
       </Switch>

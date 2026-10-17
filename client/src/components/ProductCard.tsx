@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import { imageFor, useMoney, type ProductCard as Card } from "@/lib/shop";
 import { cart } from "@/lib/cart";
 import { StrainTag } from "./store";
+import { CompareButton, WishButton } from "./ListButtons";
 import { cx } from "./ui";
 
 /** Silueta para productos que todavía no tienen foto. */
@@ -78,6 +79,10 @@ export function ProductCard({ product: p, className, size = "md" }: { product: C
           </span>
         )}
       </Link>
+      <div className="absolute right-3 top-3 z-10 flex flex-col gap-2">
+        <WishButton id={p.id} name={p.name} />
+        <CompareButton id={p.id} name={p.name} className="lg:opacity-0 lg:transition-opacity lg:group-hover:opacity-100 lg:focus-visible:opacity-100 lg:aria-pressed:opacity-100" />
+      </div>
 
       <div className="mt-4 flex items-start justify-between gap-3 px-1">
         <div className="min-w-0">
