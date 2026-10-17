@@ -6,6 +6,7 @@ import { trpc, type Out } from "@/lib/trpc";
 import { imageFor, useMoney, useShop } from "@/lib/shop";
 import { cart } from "@/lib/cart";
 import { ProductCard } from "@/components/ProductCard";
+import { HeroVibes } from "@/components/HeroVibes";
 import { Loading, SButton, SLink, StrainTag, strainColor } from "@/components/store";
 import { cx } from "@/components/ui";
 
@@ -203,7 +204,7 @@ function Showcase({ product }: { product: NonNullable<HomeData["showcase"]> }) {
       <div className="grid items-center gap-10 overflow-hidden rounded-[40px] bg-paper-2 p-6 sm:p-10 lg:grid-cols-2 lg:gap-16 lg:p-16">
         <Link href={`/product/${product.slug}`} className="relative mx-auto block aspect-square w-full max-w-[520px]">
           <span className="absolute inset-[8%] rounded-full" style={{ background: strainColor(product.strain), opacity: 0.14 }} aria-hidden />
-          {img && <img src={img} alt={product.name} className="relative size-full object-contain p-[6%] drop-shadow-[0_30px_34px_rgba(23,32,59,0.25)]" />}
+          {img && <img src={img} alt={product.name} data-showcase-img className="relative size-full object-contain p-[6%] drop-shadow-[0_30px_34px_rgba(23,32,59,0.25)]" />}
         </Link>
         <div>
           <p className="text-[15px] font-semibold text-sky-ink">{h.showcaseTitle || "Featured product"}</p>
@@ -218,7 +219,7 @@ function Showcase({ product }: { product: NonNullable<HomeData["showcase"]> }) {
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <span className="serif text-[34px] tabular-nums">{money(product.price)}</span>
             {variant && (
-              <SButton size="lg" onClick={() => cart.add(variant.id)}>
+              <SButton size="lg" onClick={() => cart.add(variant.id, 1, { el: document.querySelector("[data-showcase-img]"), src: img })}>
                 Add to cart
               </SButton>
             )}
@@ -245,7 +246,11 @@ export default function Home() {
 
   return (
     <>
-      <Hero data={data} />
+      {!h.heroImageUrl && h.effects.some((e) => e.strain) && data.pool.length >= 3 ? (
+        <HeroVibes pool={data.pool} />
+      ) : (
+        <Hero data={data} />
+      )}
 
       {best.length > 0 && (
         <section className="wrap mt-10 sm:mt-16">

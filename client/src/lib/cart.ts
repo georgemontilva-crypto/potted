@@ -39,14 +39,39 @@ if (typeof window !== "undefined") {
   });
 }
 
+/** Animación "vuela al carrito": de dónde sale y qué imagen lleva. */
+export type Flight = { id: number; src: string; from: DOMRect };
+const flightListeners = new Set<(f: Flight) => void>();
+let flightSeq = 0;
+export function onFlight(fn: (f: Flight) => void) {
+  flightListeners.add(fn);
+  return () => {
+    flightListeners.delete(fn);
+  };
+}
+const reducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
 export const cart = {
-  add(variantId: number, quantity = 1) {
+  /**
+   * Agrega al carrito. Si llega `from` (la foto del producto), la foto vuela
+   * hasta el ícono del carrito y luego se abre el carrito.
+   */
+  add(variantId: number, quantity = 1, from?: { el: Element | null; src?: string }) {
     const found = state.lines.find((l) => l.variantId === variantId);
     const lines = found
       ? state.lines.map((l) =>
           l.variantId === variantId ? { ...l, quantity: Math.min(MAX_QTY, l.quantity + quantity) } : l,
         )
       : [...state.lines, { variantId, quantity: Math.min(MAX_QTY, quantity) }];
+    const rect = from?.el?.getBoundingClientRect();
+    if (rect && from?.src && flightListeners.size > 0 && !reducedMotion()) {
+      const flight = { id: ++flightSeq, src: from.src, from: rect };
+      flightListeners.forEach((l) => l(flight));
+      set({ lines });
+      setTimeout(() => set({ open: true }), 750);
+      return;
+    }
     set({ lines, open: true });
   },
   setQuantity(variantId: number, quantity: number) {

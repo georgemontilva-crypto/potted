@@ -14,6 +14,20 @@ export function NoPhoto({ name, className }: { name: string; className?: string 
   );
 }
 
+/** Inclina la foto en 3D siguiendo el mouse (solo con mouse y sin "reducir movimiento"). */
+function tilt(e: React.PointerEvent<HTMLElement>) {
+  if (e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const r = e.currentTarget.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width - 0.5;
+  const y = (e.clientY - r.top) / r.height - 0.5;
+  e.currentTarget.style.setProperty("--rx", `${(-y * 14).toFixed(2)}deg`);
+  e.currentTarget.style.setProperty("--ry", `${(x * 18).toFixed(2)}deg`);
+}
+function untilt(e: React.PointerEvent<HTMLElement>) {
+  e.currentTarget.style.setProperty("--rx", "0deg");
+  e.currentTarget.style.setProperty("--ry", "0deg");
+}
+
 export function ProductCard({ product: p, className, size = "md" }: { product: Card; className?: string; size?: "md" | "lg" }) {
   const money = useMoney();
   const img = imageFor(p.images);
@@ -24,6 +38,9 @@ export function ProductCard({ product: p, className, size = "md" }: { product: C
     <article className={cx("group relative flex flex-col", className)}>
       <Link
         href={`/product/${p.slug}`}
+        onPointerMove={tilt}
+        onPointerLeave={untilt}
+        style={{ perspective: 900 }}
         className="relative block aspect-[1/1.05] overflow-hidden rounded-[26px] bg-paper-2 transition-colors duration-300 group-hover:bg-paper-3"
       >
         {img ? (
@@ -33,7 +50,7 @@ export function ProductCard({ product: p, className, size = "md" }: { product: C
               alt={p.name}
               loading="lazy"
               className={cx(
-                "absolute inset-0 size-full object-contain p-[9%] drop-shadow-[0_18px_22px_rgba(23,32,59,0.18)] transition-[opacity,transform] duration-500 ease-apple group-hover:scale-[1.04]",
+                "absolute inset-0 size-full object-contain p-[9%] drop-shadow-[0_18px_22px_rgba(23,32,59,0.18)] transition-[opacity,transform] duration-300 ease-out [transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_scale(1)] group-hover:[transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_scale(1.06)]",
                 second && "group-hover:opacity-0",
               )}
             />
@@ -43,7 +60,7 @@ export function ProductCard({ product: p, className, size = "md" }: { product: C
                 alt=""
                 loading="lazy"
                 aria-hidden
-                className="absolute inset-0 size-full object-contain p-[9%] opacity-0 drop-shadow-[0_18px_22px_rgba(23,32,59,0.18)] transition-opacity duration-500 group-hover:opacity-100"
+                className="absolute inset-0 size-full object-contain p-[9%] opacity-0 drop-shadow-[0_18px_22px_rgba(23,32,59,0.18)] transition-[opacity,transform] duration-300 [transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_scale(1.06)] group-hover:opacity-100"
               />
             )}
           </>
@@ -83,7 +100,7 @@ export function ProductCard({ product: p, className, size = "md" }: { product: C
         {p.quickVariantId && (
           <button
             type="button"
-            onClick={() => cart.add(p.quickVariantId!)}
+            onClick={(e) => cart.add(p.quickVariantId!, 1, { el: e.currentTarget.closest("article")?.querySelector("img") ?? null, src: img })}
             aria-label={`Add ${p.name} to cart`}
             className="relative z-10 mt-1 grid size-11 shrink-0 place-items-center rounded-full bg-navy text-paper transition-[background-color,transform] duration-200 hover:bg-sky-ink active:scale-95"
           >

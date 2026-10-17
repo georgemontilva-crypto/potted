@@ -25,6 +25,7 @@ function Gallery({ images, name, strain }: { images: { url: string }[]; name: st
             key={current.url}
             src={current.url}
             alt={name}
+            data-gallery-main
             className="relative size-full animate-[fade-in_0.35s_ease] object-contain p-[8%] drop-shadow-[0_30px_34px_rgba(23,32,59,0.22)]"
           />
         ) : (
@@ -164,7 +165,7 @@ export default function Product() {
               {available > 0 ? (
                 <>
                   <QuantityStepper value={qty} max={Math.min(20, available)} onChange={setQty} />
-                  <SButton size="lg" className="flex-1 sm:flex-none sm:min-w-[240px]" onClick={() => variant && cart.add(variant.id, qty)}>
+                  <SButton size="lg" className="flex-1 sm:flex-none sm:min-w-[240px]" onClick={() => variant && cart.add(variant.id, qty, { el: document.querySelector("[data-gallery-main]"), src: p.images[0]?.url })}>
                     Add to cart
                   </SButton>
                 </>

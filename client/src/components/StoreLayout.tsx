@@ -6,6 +6,7 @@ import { imageFor, useMoney, useShop } from "@/lib/shop";
 import { cart, useCart } from "@/lib/cart";
 import { trpc } from "@/lib/trpc";
 import { CartDrawer } from "./CartDrawer";
+import { FlyToCart } from "./FlyToCart";
 import { SButton, SInput, StrainTag, errorText } from "./store";
 import { cx } from "./ui";
 
@@ -219,13 +220,28 @@ function Header() {
               type="button"
               aria-label={count > 0 ? `Open cart, ${count} items` : "Open cart"}
               onClick={() => cart.open()}
+              data-cart-target
               className="relative grid size-11 place-items-center rounded-full transition-colors hover:bg-paper-2"
             >
-              <ShoppingBag className="size-[20px]" strokeWidth={1.9} />
+              <motion.span
+                key={count}
+                className="grid place-items-center"
+                initial={count > 0 ? { scale: 1, rotate: 0 } : false}
+                animate={count > 0 ? { scale: [1, 1.35, 0.9, 1], rotate: [0, -14, 10, 0] } : undefined}
+                transition={{ duration: 0.55, delay: 0.7 }}
+              >
+                <ShoppingBag className="size-[20px]" strokeWidth={1.9} />
+              </motion.span>
               {count > 0 && (
-                <span className="absolute right-0.5 top-0.5 grid h-[19px] min-w-[19px] place-items-center rounded-full bg-sun px-1 text-[11px] font-bold leading-none text-navy">
+                <motion.span
+                  key={`n-${count}`}
+                  initial={{ scale: 0.4 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 15, delay: 0.7 }}
+                  className="absolute right-0.5 top-0.5 grid h-[19px] min-w-[19px] place-items-center rounded-full bg-sun px-1 text-[11px] font-bold leading-none text-navy"
+                >
                   {count}
-                </span>
+                </motion.span>
               )}
             </button>
             <button
@@ -622,6 +638,7 @@ export function StoreLayout({ children }: { children: ReactNode }) {
       </main>
       <Footer />
       <CartDrawer />
+      <FlyToCart />
       <CookieNotice />
       <AgeGate />
     </div>

@@ -137,7 +137,10 @@ export const storeRouter = router({
       }),
     );
 
-    return { featured, latest, heroProduct, showcase, prerolls, categories: catTiles };
+    // Catálogo para el selector de vibra de la portada.
+    const pool = (await listProductCards({ sort: "destacados", limit: 60 })).filter((p) => p.images.length > 0);
+
+    return { featured, latest, heroProduct, showcase, prerolls, pool, categories: catTiles };
   }),
 
   products: publicProcedure
