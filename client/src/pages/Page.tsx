@@ -51,7 +51,7 @@ function BlockView({ block }: { block: Block }) {
       );
     case "imagen_texto":
       return (
-        <section className="grid items-center gap-8 md:grid-cols-2 md:gap-14">
+        <section className="grid grid-cols-[minmax(0,1fr)] items-center gap-8 md:grid-cols-2 md:gap-14">
           <div className={cx("aspect-square overflow-hidden rounded-[36px] bg-paper-2", block.imageSide === "derecha" && "md:order-2")}>
             {block.url && <img src={block.url} alt="" loading="lazy" className="size-full object-cover" />}
           </div>

@@ -42,6 +42,12 @@
 }
 
 @layer base {
+  html,
+  body {
+    /* Nada debe hacer que la página se corra de lado en el teléfono. */
+    overflow-x: clip;
+    max-width: 100%;
+  }
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

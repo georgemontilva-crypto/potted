@@ -24,7 +24,7 @@ export default function Track() {
   };
 
   return (
-    <div className="wrap grid items-center gap-12 pt-10 sm:pt-16 lg:grid-cols-[1fr_auto]">
+    <div className="wrap grid grid-cols-[minmax(0,1fr)] items-center gap-12 pt-10 sm:pt-16 lg:grid-cols-[1fr_auto]">
       <div className="max-w-[520px]">
         <h1 className="serif-xl text-[clamp(3.2rem,8vw,5.6rem)]">Track your order</h1>
         <p className="mt-5 text-[19px] text-navy-2">Enter the order number from your confirmation email and the email you used at checkout.</p>

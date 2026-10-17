@@ -44,7 +44,7 @@ function Hero({ data }: { data: HomeData }) {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="wrap grid items-center gap-x-10 pb-16 pt-10 lg:min-h-[calc(100dvh-112px)] lg:grid-cols-[1.05fr_1fr] lg:pb-20 lg:pt-6">
+      <div className="wrap grid grid-cols-[minmax(0,1fr)] items-center gap-x-10 pb-16 pt-10 lg:min-h-[calc(100dvh-112px)] lg:grid-cols-[1.05fr_1fr] lg:pb-20 lg:pt-6">
         <div className="relative z-10">
           <h1 className="serif-xl text-[clamp(4.6rem,13vw,11.5rem)]">
             {words.map((w, i) => (
@@ -201,7 +201,7 @@ function Showcase({ product }: { product: NonNullable<HomeData["showcase"]> }) {
   const img = imageFor(product.images);
   return (
     <section className="wrap mt-28 sm:mt-36">
-      <div className="grid items-center gap-10 overflow-hidden rounded-[40px] bg-paper-2 p-6 sm:p-10 lg:grid-cols-2 lg:gap-16 lg:p-16">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 overflow-hidden rounded-[40px] bg-paper-2 p-6 sm:p-10 lg:grid-cols-2 lg:gap-16 lg:p-16">
         <Link href={`/product/${product.slug}`} className="relative mx-auto block aspect-square w-full max-w-[520px]">
           <span className="absolute inset-[8%] rounded-full" style={{ background: strainColor(product.strain), opacity: 0.14 }} aria-hidden />
           {img && <img src={img} alt={product.name} data-showcase-img className="relative size-full object-contain p-[6%] drop-shadow-[0_30px_34px_rgba(23,32,59,0.25)]" />}
@@ -262,7 +262,7 @@ export default function Home() {
       )}
 
       {/* La historia */}
-      <section className="wrap mt-28 grid items-center gap-10 sm:mt-36 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+      <section className="wrap mt-28 grid grid-cols-[minmax(0,1fr)] items-center gap-10 sm:mt-36 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
         <div className="relative">
           <div className="aspect-square overflow-hidden rounded-[40px] bg-[#cfe3e8]">
             {h.storyImageUrl && <img src={h.storyImageUrl} alt="" loading="lazy" className="size-full object-cover" />}

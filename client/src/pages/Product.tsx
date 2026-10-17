@@ -118,7 +118,7 @@ export default function Product() {
           )}
         </nav>
 
-        <div className="mt-6 grid items-start gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+        <div className="mt-6 grid grid-cols-[minmax(0,1fr)] items-start gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
           <Gallery images={p.images} name={p.name} strain={p.strain} />
 
           <div>

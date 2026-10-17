@@ -175,7 +175,7 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
         rawY.set(0);
       }}
     >
-      <div className="wrap grid items-center gap-x-10 pb-14 pt-8 lg:min-h-[calc(100dvh-112px)] lg:grid-cols-[1.02fr_1fr] lg:pb-16 lg:pt-4">
+      <div className="wrap grid grid-cols-[minmax(0,1fr)] items-center gap-x-10 pb-14 pt-8 lg:min-h-[calc(100dvh-112px)] lg:grid-cols-[1.02fr_1fr] lg:pb-16 lg:pt-4">
         <div className="relative z-10 min-w-0">
           <h1 className="serif-xl text-[clamp(4.4rem,12.5vw,11rem)]">
             {h.heroTitle.split(" ").map((w, i) => (

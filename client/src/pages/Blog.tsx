@@ -35,7 +35,7 @@ export function BlogList() {
       ) : (
         <>
           {lead && (
-            <Link href={`/blog/${lead.slug}`} className="group mt-12 grid items-center gap-8 lg:grid-cols-[1.25fr_1fr] lg:gap-14">
+            <Link href={`/blog/${lead.slug}`} className="group mt-12 grid grid-cols-[minmax(0,1fr)] items-center gap-8 lg:grid-cols-[1.25fr_1fr] lg:gap-14">
               <Cover url={lead.coverUrl} title={lead.title} className="aspect-[3/2]" />
               <div>
                 <p className="text-[14px] text-navy-2">{fmtDate(lead.publishedAt)}</p>

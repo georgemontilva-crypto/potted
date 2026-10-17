@@ -206,7 +206,7 @@ export default function Order() {
         </div>
       )}
 
-      <div className="mt-12 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="mt-12 grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="space-y-5">
           {pending && (
             <section className="rounded-[30px] bg-paper-2 p-6 sm:p-8" aria-labelledby="pay">

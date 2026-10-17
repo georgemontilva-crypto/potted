@@ -199,7 +199,7 @@ export default function Checkout() {
     <div className="wrap pt-10 sm:pt-14">
       <h1 className="serif-xl text-[clamp(3.2rem,8vw,6rem)]">Checkout</h1>
 
-      <form onSubmit={submit} noValidate className="mt-10 grid items-start gap-x-[5vw] gap-y-10 lg:grid-cols-[minmax(0,1fr)_440px]">
+      <form onSubmit={submit} noValidate className="mt-10 grid grid-cols-[minmax(0,1fr)] items-start gap-x-[5vw] gap-y-10 lg:grid-cols-[minmax(0,1fr)_440px]">
         <div className="space-y-10">
           <Section title="Contact">
             <div className="grid gap-4 sm:grid-cols-2">

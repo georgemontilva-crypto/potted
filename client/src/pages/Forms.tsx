@@ -73,7 +73,7 @@ export function Wholesale() {
 
   return (
     <div className="wrap pt-10 sm:pt-16">
-      <div className="grid items-start gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
         <div className="lg:sticky lg:top-[110px]">
           <h1 className="serif-xl text-[clamp(3.4rem,9vw,6.6rem)]">Wholesale</h1>
           <p className="mt-6 max-w-[44ch] text-[19px] text-navy-2">{shop.settings.wholesaleIntro}</p>
@@ -219,7 +219,7 @@ export function Contact() {
 
   return (
     <div className="wrap pt-10 sm:pt-16">
-      <div className="grid items-start gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
         <div>
           <h1 className="serif-xl text-[clamp(3.4rem,9vw,6.6rem)]">Contact us</h1>
           <p className="mt-6 max-w-[42ch] text-[19px] text-navy-2">{s.contactIntro}</p>
