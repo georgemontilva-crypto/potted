@@ -262,6 +262,21 @@ const BATCHES: Batch[] = [
       threeKings("Black Zoap", "black-zoap", "Indica", "THCP"),
     ],
   },
+  {
+    id: "2026-10-live-rosin-flow-photos",
+    categories: [],
+    photos: [
+      ...["biscotti", "columbian-gold", "tangie", "master-kush", "super-runtz", "apple-fritter"].map((slug) => ({
+        slug,
+        image: `/products/${slug}-live-rosin.webp`,
+      })),
+      ...["sherbanger", "truffle-butter", "tropicana-cherry", "applescotti", "violet-fog", "pink-picasso"].map((name) => ({
+        slug: `${name}-flow-blue-lotus`,
+        image: `/products/${name}-flow.webp`,
+      })),
+    ],
+    products: [],
+  },
 ];
 
 const KEY = "catalog_updates";
