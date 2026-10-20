@@ -11,6 +11,7 @@ import { createContext, router } from "./trpc";
 import { readSession, rateLimit } from "./auth";
 import { saveFile, saveImage } from "./storage";
 import { seed } from "./seed";
+import { applyCatalogUpdates } from "./catalogUpdates";
 import { getSettings } from "./settings";
 import { storeRouter } from "./routers/store";
 import { authRouter } from "./routers/auth";
@@ -184,6 +185,7 @@ async function main() {
   console.log("→ Aplicando migraciones…");
   await runMigrations();
   await seed();
+  await applyCatalogUpdates();
   startPaypalReconciler();
 
   const app = express();
