@@ -333,7 +333,17 @@ async function main() {
       "/assets",
       express.static(path.join(dist, "assets"), { immutable: true, maxAge: "1y", fallthrough: false }),
     );
-    app.use(express.static(dist, { index: false, maxAge: "1d" }));
+    app.use(
+      express.static(dist, {
+        index: false,
+        maxAge: "1d",
+        // Las fotos de producto se reemplazan con el mismo nombre: el navegador
+        // debe preguntar si cambiaron (responde 304 si no) en vez de guardarlas un día.
+        setHeaders: (res, file) => {
+          if (/[\\/](products|seed)[\\/]/.test(file)) res.setHeader("Cache-Control", "no-cache");
+        },
+      }),
+    );
     app.use(async (req, res, next) => {
       if (req.method !== "GET") return next();
       try {

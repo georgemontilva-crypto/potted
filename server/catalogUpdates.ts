@@ -1,4 +1,4 @@
-import { and, eq, inArray, isNull, like } from "drizzle-orm";
+import { and, eq, inArray, isNull, like, notLike, sql } from "drizzle-orm";
 import { db, schema } from "./db";
 import { env } from "./env";
 
@@ -40,6 +40,8 @@ type Batch = {
    * tiene ninguna; si ya subiste otra desde el panel, se respeta.
    */
   photos?: { slug: string; image: string }[];
+  /** Paso extra que corre una sola vez con el lote. */
+  run?: () => Promise<void>;
 };
 
 const hashHoles = (name: string, slugBase: string, strain: string, labFile?: string): NewProduct => ({
@@ -277,6 +279,19 @@ const BATCHES: Batch[] = [
     ],
     products: [],
   },
+  {
+    // Los recortes se rehicieron (los blancos de los empaques quedaban
+    // transparentes). Cambiar la URL obliga a los navegadores a bajar la nueva.
+    id: "2026-10-photo-refresh-v2",
+    categories: [],
+    products: [],
+    run: async () => {
+      await db
+        .update(schema.productImages)
+        .set({ url: sql`concat(${schema.productImages.url}, '?v=2')` })
+        .where(and(like(schema.productImages.url, "/products/%.webp"), notLike(schema.productImages.url, "%?%")));
+    },
+  },
 ];
 
 const KEY = "catalog_updates";
@@ -365,6 +380,8 @@ export async function applyCatalogUpdates() {
       await db.insert(schema.productImages).values({ productId: prod.id, url: ph.image, color: "", sortOrder: 0 });
       photos++;
     }
+
+    if (batch.run) await batch.run();
 
     done.push(batch.id);
     const value = JSON.stringify(done);
