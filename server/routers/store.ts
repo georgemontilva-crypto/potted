@@ -60,7 +60,13 @@ export const storeRouter = router({
       db
         .select()
         .from(categories)
-        .where(eq(categories.isActive, true))
+        .where(
+          and(
+            eq(categories.isActive, true),
+            // Solo categorías con al menos un producto visible.
+            sql`exists (select 1 from ${products} where ${products.categoryId} = ${categories.id} and ${products.isActive} = true)`,
+          ),
+        )
         .orderBy(asc(categories.sortOrder), asc(categories.name)),
       db
         .select({

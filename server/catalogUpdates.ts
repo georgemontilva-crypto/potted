@@ -26,6 +26,8 @@ type NewProduct = {
   labFile?: string;
   /** Si el PDF ya se copió y perdió su nombre: título del reporte. */
   labTitle?: string;
+  /** Grupo de lab results donde buscar el reporte por título. */
+  labSection?: string;
 };
 
 type Batch = {
@@ -68,6 +70,39 @@ const meltz = (flavor: string, slugBase: string, strain: string, blend: string, 
   labTitle: flavor,
 });
 
+const flower = (name: string, slugBase: string, strain: string, labTitle = name): NewProduct => ({
+  slug: `${slugBase}-thca-flower`,
+  name: `${name} THCA Flower`,
+  category: "thca-flower",
+  strain,
+  weight: "1g",
+  tagline: `Top shelf indoor ${name} THCA flower in a 1 gram pack.`,
+  description: `Potted ${name} THCA Flower is top shelf indoor, hydroponically grown and perfectly cured. Sold in a 1 gram pack, it's an easy way to try the ${name} strain.\n\nA ${strain.toLowerCase()} pick with frosty, hand-trimmed buds.`,
+  details: `Format: 1g THCA flower\nGrow: Top shelf indoor, hydroponically grown\nEffect: ${strain}\nThird-party lab tested — see Lab Results`,
+  price: 0,
+  image: `/products/${slugBase}-thca-flower.webp`,
+  // Oculto hasta confirmar el precio.
+  isActive: false,
+  labTitle,
+  labSection: "Flowers",
+});
+
+const stash = (flavor: string, slugBase: string, strain: string, blend: string): NewProduct => ({
+  slug: `stash-${slugBase}`,
+  name: `Stash ${flavor} Gummies`,
+  category: "stash-gummies",
+  strain,
+  weight: "20 ct",
+  potency: blend,
+  tagline: `20 ${flavor} gummies, 1500mg each. Not your average supply.`,
+  description: `Stash by Potted ${flavor} gummies. Each bag holds 20 gummies at 1500mg per gummy, 30,000mg per bag, with a ${blend} blend. D9 < 0.3%.\n\nImportant: review the entire back of the package before use. Start low and go slow.`,
+  details: `Format: 20 gummies per bag (net wt. 100g)\nStrength: 1500mg per gummy, 30,000mg per bag\nBlend: ${blend}\nEffect: ${strain}\nThird-party lab tested — see Lab Results`,
+  price: 0,
+  image: `/products/stash-${slugBase}.webp`,
+  // Oculto hasta confirmar el precio.
+  isActive: false,
+});
+
 const BATCHES: Batch[] = [
   {
     id: "2026-10-hash-holes-meltz",
@@ -98,6 +133,40 @@ const BATCHES: Batch[] = [
       meltz("Watermelon", "watermelon", "Sativa", "THC-B + D8 + D9 + THC-P", "5g-g-watermelon"),
       meltz("Grape", "grape", "Sativa", "THC-B + D8 + D9 + THC-P", "5g-g-grape"),
       meltz("Sour Apple", "sour-apple", "Hybrid", "D8-THC + D9 + THC-P + CBN + HHC", "5g-g-sour-apple"),
+    ],
+  },
+  {
+    id: "2026-10-flower-stash",
+    categories: [
+      {
+        name: "THCA Flower",
+        slug: "thca-flower",
+        description: "Top shelf indoor THCA flower, hydroponically grown and perfectly cured. 1 gram packs.",
+      },
+      {
+        name: "Stash Gummies",
+        slug: "stash-gummies",
+        description: "Not your average supply. 20-count bags at 1500mg per gummy.",
+      },
+    ],
+    products: [
+      flower("Pink Açaí", "pink-acai", "Hybrid"),
+      flower("Milkman", "milkman", "Indica"),
+      flower("Sweet Cheese", "sweet-cheese", "Sativa"),
+      flower("Blue Dream", "blue-dream", "Hybrid"),
+      flower("Gelato", "gelato", "Hybrid"),
+      flower("Purple Punch", "purple-punch", "Indica"),
+      flower("Platinum Kush", "platinum-kush", "Indica"),
+      flower("Black Cherry Gelato", "black-cherry-gelato", "Sativa"),
+      flower("Strawberry Amnesia", "strawberry-amnesia", "Sativa"),
+      flower("Caramel Cake", "caramel-cake", "Sativa"),
+      flower("Gusherz", "gusherz", "Hybrid"),
+      stash("Red Runtz", "red-runtz", "Sativa", "THC-B + D8 + D9 + THC-P"),
+      stash("Grape Escape", "grape-escape", "Sativa", "THC-B + D8 + D9 + THC-P"),
+      stash("Blue Zkittlez", "blue-zkittlez", "Indica", "D9 + THC-P + CBN + THC-H"),
+      stash("Apple Tartz", "apple-tartz", "Hybrid", "D8-THC + D9 + THC-P + CBN"),
+      stash("Pineapple Kush", "pineapple-kush", "Indica", "D9 + THC-P + CBN + THC-H"),
+      stash("Watermelon Zlushie", "watermelon-zlushie", "Hybrid", "D8-THC + D9 + THC-P + CBN"),
     ],
   },
 ];
@@ -152,24 +221,26 @@ export async function applyCatalogUpdates() {
       const productId = ins.insertId;
       await db.insert(schema.productImages).values({ productId, url: p.image, color: "", sortOrder: 0 });
       await db.insert(schema.productVariants).values({ productId, stock: 100, sku: p.slug.toUpperCase() });
+      let linked = 0;
       if (p.labFile) {
         const [r] = await db
           .update(schema.labReports)
           .set({ productId })
           .where(and(like(schema.labReports.fileUrl, `%${p.labFile}%`), isNull(schema.labReports.productId)));
-        if (r.affectedRows === 0 && p.labTitle) {
-          const section = p.category === "meltz-gummies" ? "Gummies" : "Pre-rolls";
-          await db
-            .update(schema.labReports)
-            .set({ productId })
-            .where(
-              and(
-                eq(schema.labReports.title, p.labTitle),
-                eq(schema.labReports.section, section),
-                isNull(schema.labReports.productId),
-              ),
-            );
-        }
+        linked = r.affectedRows;
+      }
+      if (linked === 0 && p.labTitle) {
+        const section = p.labSection ?? (p.category === "meltz-gummies" ? "Gummies" : "Pre-rolls");
+        await db
+          .update(schema.labReports)
+          .set({ productId })
+          .where(
+            and(
+              eq(schema.labReports.title, p.labTitle),
+              eq(schema.labReports.section, section),
+              isNull(schema.labReports.productId),
+            ),
+          );
       }
       created++;
     }
