@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeftRight, ChevronDown, Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { ArrowLeftRight, ChevronDown, ChevronRight, Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { imageFor, useMoney, useShop } from "@/lib/shop";
 import { cart, useCart } from "@/lib/cart";
 import { compare, wishlist } from "@/lib/lists";
@@ -374,16 +374,25 @@ function Header() {
                 <X className="size-6" />
               </button>
             </div>
-            <ul className="wrap mt-6 flex flex-col">
+            <p className="wrap mt-4 text-[13px] font-semibold uppercase tracking-[0.08em] text-navy-3">Shop</p>
+            <ul className="wrap mt-2 flex flex-col">
               {[{ label: "Shop all", href: "/shop" }, ...links.categories, ...links.main.slice(1)].map((l, i) => (
                 <motion.li
                   key={l.href}
                   initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, ease: EASE, delay: 0.03 + i * 0.03 }}
+                  className="border-b border-paper-3"
                 >
-                  <Link href={l.href} className="serif block py-2 text-[38px]">
+                  <Link
+                    href={l.href}
+                    onClick={() => setMenu(false)}
+                    className="group flex min-h-[58px] items-center justify-between gap-4 py-3 text-[21px] font-semibold tracking-[-0.01em] active:text-sky-ink"
+                  >
                     {l.label}
+                    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-paper-2 text-navy-2 transition-colors group-active:bg-navy group-active:text-paper">
+                      <ChevronRight className="size-[18px]" strokeWidth={2.2} aria-hidden />
+                    </span>
                   </Link>
                 </motion.li>
               ))}
