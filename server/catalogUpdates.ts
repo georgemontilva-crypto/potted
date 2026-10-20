@@ -1,4 +1,4 @@
-import { and, eq, isNull, like } from "drizzle-orm";
+import { and, eq, inArray, isNull, like } from "drizzle-orm";
 import { db, schema } from "./db";
 import { env } from "./env";
 
@@ -34,6 +34,12 @@ type Batch = {
   id: string;
   categories: { name: string; slug: string; description: string }[];
   products: NewProduct[];
+  /**
+   * Fotos nuevas para productos que ya existen. Solo se cambian si el
+   * producto todavía tiene las fotos originales del sitio viejo (/seed/) o no
+   * tiene ninguna; si ya subiste otra desde el panel, se respeta.
+   */
+  photos?: { slug: string; image: string }[];
 };
 
 const hashHoles = (name: string, slugBase: string, strain: string, labFile?: string): NewProduct => ({
@@ -103,6 +109,47 @@ const stash = (flavor: string, slugBase: string, strain: string, blend: string):
   isActive: false,
 });
 
+const jar = (name: string, slugBase: string, strain: string): NewProduct => ({
+  slug: `${slugBase}-exotic-flower-113g`,
+  name: `${name} Indoor Exotic Flower 113g`,
+  category: "exotic-flower-113g",
+  strain,
+  weight: "113g",
+  tagline: `A 113 gram jar of indoor exotic ${name} THCA flower.`,
+  description: `Potted ${name} THC-A Indoor Exotic Flower comes in a 113 gram (4 oz) jar of frosty, hand-trimmed indoor buds.\n\nA ${strain.toLowerCase()} strain for people who like to keep a serious supply on hand.`,
+  details: `Format: 113g jar (4 oz)\nFlower: THC-A indoor exotic\nEffect: ${strain}\nThird-party lab tested — see Lab Results`,
+  price: 0,
+  image: `/products/${slugBase}-113g-jar.webp`,
+  // Oculto hasta confirmar el precio.
+  isActive: false,
+  labTitle: name,
+  labSection: "Flowers",
+});
+
+const threeKings = (
+  name: string,
+  slugBase: string,
+  strain: string,
+  kind: "THCA" | "THCP",
+  labTitle = name,
+): NewProduct => ({
+  slug: `three-kings-${slugBase}`,
+  name: `Three Kings ${name} ${kind} Pre-rolls`,
+  category: "three-kings-pre-rolls",
+  strain,
+  weight: "3 × 1.65g",
+  potency: `${kind} + Diamonds`,
+  tagline: `Three diamond-infused ${name} ${kind} pre-rolls, 1.65g each.`,
+  description: `Three Kings by Potted: a pack of 3 diamond-infused ${name} pre-rolls. Each one holds 1.4g of indoor ${kind} flower plus 0.25g of diamonds, 1.65g per pre-roll and 4.95g per pack.\n\nOnly superior grade flower, for a ${strain.toLowerCase()} session worth sharing.`,
+  details: `Format: 3 pre-rolls × 1.65g (4.95g total)\nEach pre-roll: 1.4g ${kind} indoor flower + 0.25g diamonds\nEffect: ${strain}\nDisplay box: 10 packs (49.5g)\nThird-party lab tested — see Lab Results`,
+  price: 0,
+  image: `/products/${slugBase}-three-kings.webp`,
+  // Oculto hasta confirmar el precio.
+  isActive: false,
+  labTitle,
+  labSection: kind === "THCP" ? "THCP 3Pack Pre roll" : "Pre-rolls",
+});
+
 const BATCHES: Batch[] = [
   {
     id: "2026-10-hash-holes-meltz",
@@ -167,6 +214,52 @@ const BATCHES: Batch[] = [
       stash("Apple Tartz", "apple-tartz", "Hybrid", "D8-THC + D9 + THC-P + CBN"),
       stash("Pineapple Kush", "pineapple-kush", "Indica", "D9 + THC-P + CBN + THC-H"),
       stash("Watermelon Zlushie", "watermelon-zlushie", "Hybrid", "D8-THC + D9 + THC-P + CBN"),
+    ],
+  },
+  {
+    id: "2026-10-crumble-jars-three-kings",
+    categories: [
+      {
+        name: "Exotic Flower 113g",
+        slug: "exotic-flower-113g",
+        description: "THC-A indoor exotic flower in 113 gram jars. A serious supply, hand-trimmed and frosty.",
+      },
+      {
+        name: "Three Kings Pre-rolls",
+        slug: "three-kings-pre-rolls",
+        description: "Diamond-infused pre-rolls in 3-packs. 1.4g flower + 0.25g diamonds in every cone.",
+      },
+    ],
+    photos: ["bubba-kush", "chem-d", "sour-diesel", "durban-poison", "zkittlez", "gelato"].map((slug) => ({
+      slug,
+      image: `/products/${slug}-crumble.webp`,
+    })),
+    products: [
+      jar("Jealousy", "jealousy", "Hybrid"),
+      jar("Ice Cream Cake", "ice-cream-cake", "Indica"),
+      jar("Ghost Train Haze", "ghost-train-haze", "Sativa"),
+      jar("White Runtz", "white-runtz", "Hybrid"),
+      jar("Tropicana Cookies", "tropicana-cookies", "Sativa"),
+      jar("Sour Tangie", "sour-tangie", "Sativa"),
+      jar("Slurricane", "slurricane", "Indica"),
+      jar("Purple Punch", "purple-punch", "Indica"),
+      jar("Peanut Butter Breath", "peanut-butter-breath", "Indica"),
+      jar("MAC 1", "mac-1", "Hybrid"),
+      threeKings("Gorilla Glue", "gorilla-glue", "Hybrid", "THCA"),
+      threeKings("Sour Haze", "sour-haze", "Sativa", "THCA"),
+      threeKings("Laughing Buddha", "laughing-buddha", "Sativa", "THCA"),
+      threeKings("Durban Z", "durban-z", "Sativa", "THCA"),
+      threeKings("Grape Runtz", "grape-runtz", "Indica", "THCA"),
+      threeKings("God's Gift", "gods-gift", "Indica", "THCA"),
+      threeKings("Space Cake", "space-cake", "Indica", "THCA"),
+      threeKings("Sugar Pop", "sugar-pop", "Indica", "THCA"),
+      threeKings("Jealousy", "jealousy", "Hybrid", "THCA"),
+      threeKings("Pancakes", "pancakes", "Indica", "THCP"),
+      threeKings("Hawaiian Fanta", "hawaiian-fanta", "Sativa", "THCP"),
+      threeKings("Gas Station Sushi", "gas-station-sushi", "Sativa", "THCP"),
+      threeKings("Lemon Cherry Gelato", "lemon-cherry-gelato", "Hybrid", "THCP"),
+      threeKings("Cereal Milk", "cereal-milk", "Hybrid", "THCP"),
+      threeKings("Black Zoap", "black-zoap", "Indica", "THCP"),
     ],
   },
 ];
@@ -245,9 +338,22 @@ export async function applyCatalogUpdates() {
       created++;
     }
 
+    let photos = 0;
+    for (const ph of batch.photos ?? []) {
+      const [prod] = await db.select({ id: schema.products.id }).from(schema.products).where(eq(schema.products.slug, ph.slug)).limit(1);
+      if (!prod) continue;
+      const imgs = await db.select().from(schema.productImages).where(eq(schema.productImages.productId, prod.id));
+      if (imgs.some((i) => !i.url.startsWith("/seed/"))) continue;
+      if (imgs.length) {
+        await db.delete(schema.productImages).where(inArray(schema.productImages.id, imgs.map((i) => i.id)));
+      }
+      await db.insert(schema.productImages).values({ productId: prod.id, url: ph.image, color: "", sortOrder: 0 });
+      photos++;
+    }
+
     done.push(batch.id);
     const value = JSON.stringify(done);
     await db.insert(schema.settings).values({ key: KEY, value }).onDuplicateKeyUpdate({ set: { value } });
-    console.log(`✓ Catálogo actualizado (${batch.id}): ${created} productos nuevos.`);
+    console.log(`✓ Catálogo actualizado (${batch.id}): ${created} productos nuevos, ${photos} fotos cambiadas.`);
   }
 }
