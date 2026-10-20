@@ -238,7 +238,7 @@ export default function Order() {
                       {o.paymentProofUrl ? (
                         <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
                           <p className="flex items-center gap-2.5 text-[16px] font-semibold">
-                            <span className="grid size-6 place-items-center rounded-full bg-leaf text-white">
+                            <span className="grid size-6 place-items-center rounded-full bg-leaf text-night">
                               <Check className="size-3.5" strokeWidth={3} aria-hidden />
                             </span>
                             We got your receipt

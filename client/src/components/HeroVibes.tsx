@@ -25,14 +25,14 @@ const GROUPS: Record<string, string[]> = {
 };
 /* Color del sol para cada vibra. */
 const SUN: Record<string, string> = {
-  indica: "#c9b5f5",
-  sativa: "#ffc22e",
-  hybrid: "#9fdcaa",
-  relaxing: "#c9b5f5",
-  uplifting: "#ffc22e",
-  harmony: "#8fd3f0",
+  indica: "#b894ff",
+  sativa: "#ffd23f",
+  hybrid: "#4ff09a",
+  relaxing: "#b894ff",
+  uplifting: "#ffd23f",
+  harmony: "#2de2ff",
 };
-const PAPER = "#f5f0e6";
+const NIGHT = "#0b0a1f";
 
 function mix(hex: string, base: string, amount: number) {
   const p = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
@@ -69,10 +69,10 @@ function Sticker({ reduce }: { reduce: boolean | null }) {
       aria-hidden
     >
       <svg viewBox="0 0 200 200" className="size-full">
-        <circle cx="100" cy="100" r="98" fill="var(--color-navy)" />
-        <circle cx="100" cy="100" r="58" fill="none" stroke="var(--color-sun)" strokeWidth="2" strokeDasharray="3 6" />
+        <circle cx="100" cy="100" r="98" fill="#0b0a1f" stroke="var(--color-pink)" strokeWidth="3" />
+        <circle cx="100" cy="100" r="58" fill="none" stroke="var(--color-cyan)" strokeWidth="2" strokeDasharray="3 6" />
         <path id="sticker-ring" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0" fill="none" />
-        <text fill="var(--color-paper)" fontSize="16" fontWeight="700" fontFamily="var(--font-sans)">
+        <text fill="#f6f3ff" fontSize="16" fontWeight="700" fontFamily="var(--font-sans)">
           <textPath href="#sticker-ring" textLength="462" lengthAdjust="spacing">
             {text}
           </textPath>
@@ -131,7 +131,8 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
 
   const vibe = vibes[idx];
   const strain = vibe?.strain ?? "";
-  const sun = SUN[strain.toLowerCase()] ?? "#ffc22e";
+  const sun = SUN[strain.toLowerCase()] ?? "#ffd23f";
+  const bg = mix(sun, NIGHT, 0.1);
   const picks = useMemo(() => pick(pool, strain), [pool, strain]);
 
   // Cambia de vibra sola hasta que la persona toque algo.
@@ -166,7 +167,7 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
   return (
     <motion.section
       className="relative overflow-hidden"
-      animate={{ backgroundColor: mix(sun, PAPER, 0.16) }}
+      animate={{ backgroundColor: bg }}
       initial={false}
       transition={{ duration: 0.8, ease: EASE }}
       onPointerMove={onMove}
@@ -175,9 +176,19 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
         rawY.set(0);
       }}
     >
-      <div className="wrap grid grid-cols-[minmax(0,1fr)] items-center gap-x-10 pb-14 pt-8 lg:min-h-[calc(100dvh-112px)] lg:grid-cols-[1.02fr_1fr] lg:pb-16 lg:pt-4">
+      {/* Piso de grilla 80s */}
+      <div className="pointer-events-none absolute inset-x-[-20%] bottom-0 h-[34%] overflow-hidden lg:h-[18%]" aria-hidden>
+        <div className="grid-floor absolute inset-x-0 top-0 h-[260%] opacity-70" />
+      </div>
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 bottom-[34%] h-px lg:hidden"
+        animate={{ backgroundColor: sun, boxShadow: `0 0 24px 4px ${sun}` }}
+        transition={{ duration: 0.8 }}
+        aria-hidden
+      />
+      <div className="wrap relative grid grid-cols-[minmax(0,1fr)] items-center gap-x-10 pb-14 pt-8 lg:min-h-[calc(100dvh-112px)] lg:grid-cols-[1.02fr_1fr] lg:pb-16 lg:pt-4">
         <div className="relative z-10 min-w-0">
-          <h1 className="serif-xl text-[clamp(4.4rem,12.5vw,11rem)]">
+          <h1 className="serif-xl chrome pb-[0.06em] text-[clamp(4.6rem,13.5vw,11.5rem)] uppercase">
             {h.heroTitle.split(" ").map((w, i) => (
               <motion.span
                 key={i}
@@ -190,14 +201,14 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
               </motion.span>
             ))}
           </h1>
-          <p className="mt-6 max-w-[34ch] text-[clamp(1.05rem,1.5vw,1.3rem)] leading-snug text-navy-2">{h.heroSubtitle}</p>
+          <p className="mt-6 max-w-[36ch] text-[clamp(1.05rem,1.5vw,1.3rem)] leading-snug text-navy-2">{h.heroSubtitle}</p>
 
           <div className="mt-9">
-            <p className="serif text-[22px]">What’s your vibe?</p>
+            <p className="text-[13px] font-bold uppercase tracking-[0.18em] text-cyan">What’s your vibe?</p>
             <div role="tablist" aria-label="Choose your vibe" className="no-scrollbar -mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1">
               {vibes.map((v, i) => {
                 const on = i === idx;
-                const c = SUN[v.strain.toLowerCase()] ?? "#ffc22e";
+                const c = SUN[v.strain.toLowerCase()] ?? "#ffd23f";
                 return (
                   <button
                     key={v.title}
@@ -207,13 +218,13 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
                     onClick={() => choose(i)}
                     className={cx(
                       "relative flex h-[60px] shrink-0 items-center gap-2.5 rounded-full pl-1.5 pr-5 text-[15px] font-semibold transition-colors duration-300",
-                      on ? "text-paper" : "bg-paper/70 text-navy shadow-[inset_0_0_0_1.5px_var(--color-paper-3)] hover:bg-paper",
+                      on ? "text-night" : "bg-paper-2/70 text-navy shadow-[inset_0_0_0_1.5px_var(--color-paper-3)] backdrop-blur hover:shadow-[inset_0_0_0_1.5px_var(--color-navy-3)]",
                     )}
                   >
                     {on && (
                       <motion.span
                         layoutId="vibe-pill"
-                        className="absolute inset-0 rounded-full bg-navy"
+                        className="absolute inset-0 rounded-full bg-[linear-gradient(100deg,var(--color-pink),var(--color-orange))] shadow-[0_0_30px_-4px_rgba(255,79,216,0.8)]"
                         transition={{ type: "spring", stiffness: 380, damping: 32 }}
                       />
                     )}
@@ -230,7 +241,7 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
                     {on && auto && !reduce && (
                       <motion.span
                         key={`bar-${idx}`}
-                        className="absolute bottom-[7px] left-[62px] right-5 h-[2px] origin-left rounded-full bg-sun"
+                        className="absolute bottom-[7px] left-[62px] right-5 h-[2px] origin-left rounded-full bg-night/60"
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: hoverStage ? 0 : 1 }}
                         transition={{ duration: hoverStage ? 0.2 : 4.2, ease: "linear" }}
@@ -275,8 +286,13 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
           <Depth mx={mx} my={my} depth={-10} className="absolute inset-[7%]">
             <motion.div
               className="size-full rounded-full"
-              initial={reduce ? false : { scale: 0.6, opacity: 0, backgroundColor: sun }}
-              animate={{ scale: 1, opacity: 1, backgroundColor: sun }}
+              initial={reduce ? false : { scale: 0.6, opacity: 0 }}
+              animate={{
+                scale: 1,
+                opacity: 1,
+                background: `linear-gradient(180deg, ${sun} 8%, #ff4fd8 78%)`,
+                boxShadow: `0 0 90px -10px ${sun}, 0 0 160px -30px #ff4fd8`,
+              }}
               transition={{ duration: 0.7, ease: EASE }}
             />
             {!reduce && (
@@ -290,9 +306,22 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
                 aria-hidden
               />
             )}
+            {/* Franjas del atardecer 80s, del color del fondo. */}
             <div className="absolute inset-0 overflow-hidden rounded-full" aria-hidden>
-              {[18, 26, 34].map((b) => (
-                <div key={b} className="absolute inset-x-0 h-[3px] bg-navy/10" style={{ bottom: `${b}%` }} />
+              {[
+                [10, 5.5],
+                [20, 4.5],
+                [29, 3.5],
+                [37, 2.6],
+                [44, 1.8],
+              ].map(([b, hgt]) => (
+                <motion.div
+                  key={b}
+                  className="absolute inset-x-0"
+                  style={{ bottom: `${b}%`, height: `${hgt}%` }}
+                  animate={{ backgroundColor: bg }}
+                  transition={{ duration: 0.8, ease: EASE }}
+                />
               ))}
             </div>
           </Depth>
@@ -338,7 +367,7 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
                       src={imageFor(p.images)}
                       alt=""
                       draggable={false}
-                      className="pointer-events-none w-full drop-shadow-[0_28px_30px_rgba(23,32,59,0.3)]"
+                      className="pointer-events-none w-full drop-shadow-[0_28px_30px_rgba(0,0,0,0.55)]"
                     />
                     <span className="pointer-events-none absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-navy px-3.5 py-1.5 text-[13px] font-semibold text-paper opacity-0 shadow-float transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
                       {p.name} {money(p.price)}
@@ -356,7 +385,7 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
                   key={vibe.imageUrl}
                   src={vibe.imageUrl}
                   alt=""
-                  className="w-full drop-shadow-[0_10px_12px_rgba(23,32,59,0.18)]"
+                  className="w-full drop-shadow-[0_10px_18px_rgba(0,0,0,0.5)]"
                   initial={reduce ? false : { opacity: 0, x: 40, rotate: 8 }}
                   animate={{ opacity: 1, x: 0, rotate: 0 }}
                   exit={{ opacity: 0, x: -30, rotate: -8 }}
@@ -369,7 +398,7 @@ export function HeroVibes({ pool }: { pool: Card[] }) {
           <AnimatePresence>
             {hint && !reduce && (
               <motion.p
-                className="pointer-events-none absolute -bottom-8 left-[8%] z-50 font-[family-name:var(--font-serif)] text-[17px] italic text-navy-2"
+                className="pointer-events-none absolute -bottom-8 left-[8%] z-50 text-[15px] font-medium text-navy-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}

@@ -121,7 +121,7 @@ function CountIcon({ href, label, count, children, className }: { href: string; 
     >
       {children}
       {count > 0 && (
-        <span className="absolute right-0.5 top-0.5 grid h-[19px] min-w-[19px] place-items-center rounded-full bg-sky px-1 text-[11px] font-bold leading-none text-navy">
+        <span className="absolute right-0.5 top-0.5 grid h-[19px] min-w-[19px] place-items-center rounded-full bg-cyan px-1 text-[11px] font-bold leading-none text-night">
           {count}
         </span>
       )}
@@ -155,7 +155,7 @@ function SearchSheet({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[70]">
       <motion.div
-        className="absolute inset-0 bg-navy/35 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-night/70 backdrop-blur-[3px]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -338,7 +338,7 @@ function Header() {
                   initial={{ scale: 0.4 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 15, delay: 0.7 }}
-                  className="absolute right-0.5 top-0.5 grid h-[19px] min-w-[19px] place-items-center rounded-full bg-sun px-1 text-[11px] font-bold leading-none text-navy"
+                  className="absolute right-0.5 top-0.5 grid h-[19px] min-w-[19px] place-items-center rounded-full bg-pink px-1 text-[11px] font-bold leading-none text-night"
                 >
                   {count}
                 </motion.span>
@@ -461,7 +461,7 @@ export function Newsletter({ tone = "light" }: { tone?: "light" | "dark" }) {
           <p className="text-[17px] font-semibold">You’re on the list.</p>
           {done.coupon ? (
             <p className={cx("mt-1 text-[15px]", dark ? "text-paper/75" : "text-navy-2")}>
-              Use code <strong className="rounded-md bg-sun px-1.5 py-0.5 font-bold text-navy">{done.coupon}</strong> at checkout.
+              Use code <strong className="rounded-md bg-sun px-1.5 py-0.5 font-bold text-night">{done.coupon}</strong> at checkout.
             </p>
           ) : (
             <p className={cx("mt-1 text-[15px]", dark ? "text-paper/75" : "text-navy-2")}>Watch your inbox for drops and deals.</p>
@@ -503,17 +503,17 @@ function Footer() {
     { label: "TikTok", href: s.tiktok },
     { label: "Facebook", href: s.facebook },
   ].filter((x) => x.href);
-  const linkClass = "text-[15px] text-paper/70 transition-colors hover:text-paper";
+  const linkClass = "text-[15px] text-navy-2 transition-colors hover:text-cyan";
 
   return (
-    <footer className="mt-28 bg-navy text-paper">
-      <div className="wrap border-b border-paper/12 py-16">
-        <Newsletter tone="dark" />
+    <footer className="relative mt-28 overflow-hidden border-t border-pink/40 bg-night text-navy shadow-[0_-20px_60px_-30px_rgba(255,79,216,0.6)]">
+      <div className="wrap border-b border-paper-3 py-16">
+        <Newsletter />
       </div>
       <div className="wrap grid gap-12 py-14 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
         <div>
           <Brand size="lg" />
-          <p className="mt-5 max-w-[30ch] text-[15px] text-paper/70">{s.tagline}</p>
+          <p className="mt-5 max-w-[30ch] text-[15px] text-navy-2">{s.tagline}</p>
         </div>
         <nav aria-label="Shop">
           <h2 className="text-[15px] font-semibold">Shop</h2>
@@ -601,7 +601,7 @@ function Footer() {
                 </a>
               </li>
             )}
-            {s.address && <li className="max-w-[26ch] text-[15px] text-paper/70">{s.address}</li>}
+            {s.address && <li className="max-w-[26ch] text-[15px] text-navy-2">{s.address}</li>}
             {social.map((x) => (
               <li key={x.label}>
                 <a href={x.href} target="_blank" rel="noreferrer" className={linkClass}>
@@ -613,14 +613,14 @@ function Footer() {
         </div>
       </div>
       {s.disclaimer && (
-        <div className="wrap border-t border-paper/12 py-8">
-          <p className="max-w-[120ch] text-[12.5px] leading-relaxed text-paper/55">
-            <strong className="font-semibold text-paper/75">Disclaimer: </strong>
+        <div className="wrap border-t border-paper-3 py-8">
+          <p className="max-w-[120ch] text-[12.5px] leading-relaxed text-navy-2">
+            <strong className="font-semibold text-navy-2">Disclaimer: </strong>
             {s.disclaimer}
           </p>
         </div>
       )}
-      <div className="wrap flex flex-wrap items-center justify-between gap-3 border-t border-paper/12 py-6 text-[13px] text-paper/50">
+      <div className="wrap flex flex-wrap items-center justify-between gap-3 border-t border-paper-3 py-6 text-[13px] text-navy-2">
         <p>
           © {new Date().getFullYear()} {s.storeName}. All rights reserved.
         </p>
@@ -713,8 +713,8 @@ function CookieNotice() {
   const [show, setShow] = useState(() => read(COOKIE_KEY) !== "ok");
   if (!show) return null;
   return (
-    <div className="fixed inset-x-3 bottom-3 z-[65] mx-auto flex max-w-[560px] flex-wrap items-center gap-x-5 gap-y-3 rounded-[22px] bg-navy px-5 py-4 text-paper shadow-sheet sm:left-4 sm:right-auto sm:mx-0">
-      <p className="min-w-0 flex-1 text-[14px] text-paper/85">
+    <div className="fixed inset-x-3 bottom-3 z-[65] mx-auto flex max-w-[560px] flex-wrap items-center gap-x-5 gap-y-3 rounded-[22px] bg-paper-2 px-5 py-4 text-navy shadow-[0_0_0_1px_rgba(45,226,255,0.35),0_20px_50px_-10px_rgba(0,0,0,0.7)] sm:left-4 sm:right-auto sm:mx-0">
+      <p className="min-w-0 flex-1 text-[14px] text-navy-2">
         We use cookies to improve your experience on our website. By browsing this website, you agree to our use of cookies.
       </p>
       <SButton
@@ -743,7 +743,7 @@ export function StoreLayout({ children }: { children: ReactNode }) {
         Skip to content
       </a>
       {announcement && (
-        <div className="bg-sky text-center text-[13.5px] font-medium text-navy">
+        <div className="bg-[linear-gradient(90deg,var(--color-pink),var(--color-orange),var(--color-pink))] text-center text-[13.5px] font-semibold text-night">
           {announcementHref ? (
             <Link href={announcementHref} className="wrap block py-2.5 hover:underline">
               {announcement}

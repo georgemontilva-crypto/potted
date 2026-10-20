@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "@fontsource-variable/instrument-sans/wdth.css";
-@import "@fontsource-variable/fraunces/full.css";
+@import "@fontsource-variable/bricolage-grotesque/standard.css";
 
 @theme {
   --font-sans: "Instrument Sans Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
@@ -16,8 +16,10 @@
   --color-warn: #b25e09;
   --color-bad: #c9302c;
 
-  /* Tienda (PotTed): papel de revista, tinta azul noche, cielo y sol del logo. */
-  --font-serif: "Fraunces Variable", Georgia, "Times New Roman", serif;
+  /* Tienda (PotTed): noche neón de los 80, con los colores de los empaques.
+     Los nombres (paper = fondo, navy = texto) se mantienen; los valores
+     oscuros se definen en .store más abajo. */
+  --font-serif: "Bricolage Grotesque Variable", "Instrument Sans Variable", system-ui, sans-serif;
   --color-paper: #f5f0e6;
   --color-paper-2: #ebe3d3;
   --color-paper-3: #ded3bd;
@@ -30,6 +32,11 @@
   --color-cherry: #d43f2e;
   --color-leaf: #2f7d4f;
   --color-violet: #6a4bb4;
+  --color-pink: #ff4fd8;
+  --color-cyan: #2de2ff;
+  --color-lime: #b6ff3b;
+  --color-orange: #ff8a3d;
+  --color-night: #07061a;
 
   --radius-ctl: 14px;
   --radius-card: 28px;
@@ -166,32 +173,116 @@
   }
 }
 
-/* Titulares de la tienda: Fraunces suave y de alto contraste óptico. */
+/* Titulares de la tienda: Bricolage Grotesque gruesa y condensada. */
 @utility serif {
   font-family: var(--font-serif);
-  font-variation-settings: "SOFT" 100, "WONK" 0;
-  font-weight: 560;
-  letter-spacing: -0.02em;
-  line-height: 1.02;
+  font-weight: 760;
+  font-stretch: 86%;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
 }
 @utility serif-xl {
   font-family: var(--font-serif);
-  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
   font-weight: 800;
+  font-stretch: 75%;
   letter-spacing: -0.035em;
-  line-height: 0.88;
+  line-height: 0.86;
+}
+
+/* Texto cromado con brillo, como las letras de los empaques. */
+@utility chrome {
+  background: linear-gradient(180deg, #ffffff 0%, #e9e4ff 38%, #9d8cff 52%, #ffffff 58%, #ffd6f7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 18px rgba(255, 79, 216, 0.35)) drop-shadow(0 2px 0 rgba(0, 0, 0, 0.35));
+}
+/* Degradado neón para palabras sueltas. */
+@utility neon-text {
+  background: linear-gradient(92deg, var(--color-cyan), var(--color-pink) 55%, var(--color-orange));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility glow-pink {
+  box-shadow: 0 0 0 1px rgba(255, 79, 216, 0.5), 0 0 28px -4px rgba(255, 79, 216, 0.55);
+}
+@utility glow-cyan {
+  box-shadow: 0 0 0 1px rgba(45, 226, 255, 0.5), 0 0 28px -4px rgba(45, 226, 255, 0.55);
+}
+/* Piso de grilla en perspectiva que avanza. */
+@utility grid-floor {
+  background-image:
+    linear-gradient(to right, rgba(255, 79, 216, 0.55) 1.5px, transparent 1.5px),
+    linear-gradient(to bottom, rgba(45, 226, 255, 0.5) 1.5px, transparent 1.5px);
+  background-size: 64px 48px;
+  transform: perspective(380px) rotateX(62deg);
+  transform-origin: 50% 0;
+  animation: grid-run 1.8s linear infinite;
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
+}
+
+@keyframes grid-run {
+  to {
+    background-position: 0 48px;
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes float-y {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
 }
 
 .store {
+  --color-paper: #0b0a1f;
+  --color-paper-2: #17153a;
+  --color-paper-3: #2c2862;
+  --color-navy: #f6f3ff;
+  --color-navy-2: #c2bde8;
+  --color-navy-3: #8f89bd;
+  --color-sky: #2de2ff;
+  --color-sky-ink: #6ae9ff;
+  --color-sun: #ffd23f;
+  --color-cherry: #ff4f8b;
+  --color-leaf: #4ff09a;
+  --color-violet: #b894ff;
   background: var(--color-paper);
   color: var(--color-navy);
+  color-scheme: dark;
+  isolation: isolate;
+}
+/* Brillos de fondo y grano, fijos detrás de todo. */
+.store::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60vw 50vh at 85% -10%, rgba(255, 79, 216, 0.16), transparent 70%),
+    radial-gradient(55vw 45vh at -10% 30%, rgba(45, 226, 255, 0.12), transparent 70%),
+    radial-gradient(50vw 40vh at 60% 110%, rgba(138, 92, 255, 0.16), transparent 70%);
+}
+html:has(.store),
+body:has(.store) {
+  background: #0b0a1f;
 }
 .store ::selection {
-  background: var(--color-sun);
-  color: var(--color-navy);
+  background: var(--color-pink);
+  color: #0b0a1f;
 }
 .store :focus-visible {
-  outline-color: var(--color-sky-ink);
+  outline-color: var(--color-cyan);
 }
 
 /* Texto enriquecido (blog y páginas importadas). */
@@ -207,8 +298,8 @@
 .prose-potted h3,
 .prose-potted h4 {
   font-family: var(--font-serif);
-  font-variation-settings: "SOFT" 100;
-  font-weight: 600;
+  font-weight: 720;
+  font-stretch: 90%;
   color: var(--color-navy);
   letter-spacing: -0.015em;
   line-height: 1.15;

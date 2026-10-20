@@ -60,7 +60,7 @@ function OptionCard({
   return (
     <label
       className={cx(
-        "flex cursor-pointer items-center gap-4 rounded-[18px] bg-white/70 px-5 py-4 transition-shadow duration-150",
+        "flex cursor-pointer items-center gap-4 rounded-[18px] bg-paper-2 px-5 py-4 transition-shadow duration-150",
         selected ? "shadow-[0_0_0_2px_var(--color-navy)]" : "shadow-[0_0_0_1px_var(--color-paper-3)] hover:shadow-[0_0_0_1.5px_var(--color-navy-3)]",
       )}
     >

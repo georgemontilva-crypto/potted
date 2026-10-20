@@ -16,9 +16,10 @@ type Tone = "ink" | "sun" | "outline" | "quiet";
 type Size = "sm" | "md" | "lg";
 
 const TONE: Record<Tone, string> = {
-  ink: "bg-navy text-paper hover:bg-[#232e52]",
-  sun: "bg-sun text-navy hover:bg-[#ffcd52]",
-  outline: "text-navy shadow-[inset_0_0_0_1.5px_var(--color-navy)] hover:bg-navy hover:text-paper",
+  // Botón principal: degradado neón rosa → naranja con brillo.
+  ink: "bg-[linear-gradient(100deg,var(--color-pink),#ff6aa8_45%,var(--color-orange))] bg-[length:160%_100%] bg-left text-night shadow-[0_0_0_1px_rgba(255,79,216,0.4),0_10px_30px_-8px_rgba(255,79,216,0.7)] hover:bg-right hover:shadow-[0_0_0_1px_rgba(255,79,216,0.6),0_14px_38px_-6px_rgba(255,79,216,0.9)] [transition:background-position_.5s,box-shadow_.2s,transform_.2s]",
+  sun: "bg-sun text-night shadow-[0_10px_30px_-10px_rgba(255,210,63,0.7)] hover:bg-[#ffe07a]",
+  outline: "text-navy shadow-[inset_0_0_0_1.5px_rgba(246,243,255,0.35)] hover:text-cyan hover:shadow-[inset_0_0_0_1.5px_var(--color-cyan),0_0_24px_-6px_rgba(45,226,255,0.7)]",
   quiet: "text-navy hover:bg-paper-2",
 };
 const SIZE: Record<Size, string> = {
@@ -75,7 +76,7 @@ export function SLink({
 }
 
 const control =
-  "w-full rounded-[14px] border border-paper-3 bg-white/80 px-4 text-[16px] text-navy placeholder:text-navy-3 transition-[border-color,box-shadow] duration-150 hover:border-navy-3 focus:border-navy focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky/20";
+  "w-full rounded-[14px] border border-paper-3 bg-paper-2/80 px-4 text-[16px] text-navy placeholder:text-navy-3 transition-[border-color,box-shadow] duration-150 hover:border-navy-3 focus:border-cyan focus:bg-paper-2 focus:outline-none focus:ring-4 focus:ring-cyan/20 [&>option]:bg-paper-2";
 
 export function SField({
   label,
@@ -134,11 +135,11 @@ export function SSelect({ className, children, ...rest }: SelectHTMLAttributes<H
 
 const STRAIN_COLOR: Record<string, string> = {
   indica: "var(--color-violet)",
-  sativa: "#c98a00",
+  sativa: "var(--color-sun)",
   hybrid: "var(--color-leaf)",
   relaxing: "var(--color-violet)",
-  uplifting: "#c98a00",
-  harmony: "var(--color-sky-ink)",
+  uplifting: "var(--color-sun)",
+  harmony: "var(--color-cyan)",
 };
 export const strainColor = (s: string) => STRAIN_COLOR[s.toLowerCase()] ?? "var(--color-sky-ink)";
 

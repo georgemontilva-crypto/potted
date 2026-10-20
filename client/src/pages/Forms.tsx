@@ -11,7 +11,7 @@ const okEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
 function Sent({ title, text }: { title: string; text: string }) {
   return (
     <div role="status" className="rounded-[30px] bg-paper-2 p-8 sm:p-10">
-      <span className="grid size-12 place-items-center rounded-full bg-leaf text-white">
+      <span className="grid size-12 place-items-center rounded-full bg-leaf text-night">
         <Check className="size-6" strokeWidth={2.6} aria-hidden />
       </span>
       <h2 className="serif mt-6 text-[34px]">{title}</h2>

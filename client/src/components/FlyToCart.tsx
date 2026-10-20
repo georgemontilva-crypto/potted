@@ -32,7 +32,7 @@ export function FlyToCart() {
             src={f.src}
             alt=""
             aria-hidden
-            className="pointer-events-none fixed left-0 top-0 z-[90] object-contain drop-shadow-[0_18px_22px_rgba(23,32,59,0.3)]"
+            className="pointer-events-none fixed left-0 top-0 z-[90] object-contain drop-shadow-[0_18px_22px_rgba(0,0,0,0.5)]"
             style={{ width: size, height: size }}
             initial={{ x: startX, y: startY, scale: 1, rotate: 0, opacity: 1 }}
             animate={{

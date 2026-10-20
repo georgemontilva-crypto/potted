@@ -33,7 +33,7 @@ export function WishButton({ id, name, variant = "icon", className }: { id: numb
       aria-pressed={on}
       aria-label={on ? `Remove ${name} from wishlist` : `Add ${name} to wishlist`}
       title={on ? "Remove from wishlist" : "Add to wishlist"}
-      className={cx("grid size-10 place-items-center rounded-full bg-paper/85 text-navy shadow-sm backdrop-blur transition-colors hover:bg-paper", className)}
+      className={cx("grid size-10 place-items-center rounded-full bg-night/70 text-navy shadow-sm backdrop-blur transition-colors hover:bg-night", className)}
     >
       {heart}
     </button>
@@ -68,7 +68,7 @@ export function CompareButton({ id, name, variant = "icon", className }: { id: n
       title={on ? "Remove from compare" : "Compare"}
       className={cx(
         "grid size-10 place-items-center rounded-full shadow-sm backdrop-blur transition-colors",
-        on ? "bg-sky text-navy" : "bg-paper/85 text-navy hover:bg-paper",
+        on ? "bg-cyan text-night" : "bg-night/70 text-navy hover:bg-night",
         className,
       )}
     >

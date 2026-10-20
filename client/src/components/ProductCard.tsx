@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Plus } from "lucide-react";
 import { imageFor, useMoney, type ProductCard as Card } from "@/lib/shop";
 import { cart } from "@/lib/cart";
-import { StrainTag } from "./store";
+import { StrainTag, strainColor } from "./store";
 import { CompareButton, WishButton } from "./ListButtons";
 import { cx } from "./ui";
 
@@ -68,7 +68,7 @@ export function ProductCard({
           onPointerMove={tilt}
           onPointerLeave={untilt}
           style={{ perspective: 900 }}
-          className="relative block aspect-[1/1.05] overflow-hidden rounded-[26px] bg-paper-2 transition-colors duration-300 group-hover:bg-paper-3"
+          className="relative block aspect-[1/1.05] overflow-hidden rounded-[26px] bg-paper-2 shadow-[inset_0_0_0_1px_var(--color-paper-3)] transition-[box-shadow] duration-300 group-hover:shadow-[inset_0_0_0_1.5px_rgba(255,79,216,0.7),0_0_40px_-12px_rgba(255,79,216,0.8)]"
         >
           {img ? (
             <>
@@ -77,7 +77,7 @@ export function ProductCard({
                 alt={p.name}
                 loading="lazy"
                 className={cx(
-                  "absolute inset-0 size-full object-contain p-[9%] drop-shadow-[0_18px_22px_rgba(23,32,59,0.18)] transition-[opacity,transform] duration-300 ease-out [transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_scale(1)] group-hover:[transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_scale(1.06)]",
+                  "absolute inset-0 size-full object-contain p-[9%] drop-shadow-[0_18px_22px_rgba(0,0,0,0.55)] transition-[opacity,transform] duration-300 ease-out [transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_scale(1)] group-hover:[transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_scale(1.06)]",
                   second && "group-hover:opacity-0",
                 )}
               />
@@ -87,7 +87,7 @@ export function ProductCard({
                   alt=""
                   loading="lazy"
                   aria-hidden
-                  className="absolute inset-0 size-full object-contain p-[9%] opacity-0 drop-shadow-[0_18px_22px_rgba(23,32,59,0.18)] transition-[opacity,transform] duration-300 [transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_scale(1.06)] group-hover:opacity-100"
+                  className="absolute inset-0 size-full object-contain p-[9%] opacity-0 drop-shadow-[0_18px_22px_rgba(0,0,0,0.55)] transition-[opacity,transform] duration-300 [transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_scale(1.06)] group-hover:opacity-100"
                 />
               )}
             </>
@@ -101,8 +101,8 @@ export function ProductCard({
                 soldOut
                   ? "bg-navy text-paper"
                   : p.compareAtPrice
-                    ? "bg-cherry text-white"
-                    : "bg-sun text-navy",
+                    ? "bg-cherry text-night"
+                    : "bg-sun text-night",
               )}
             >
               {soldOut ? "Sold out" : p.compareAtPrice ? "Sale" : "New"}
@@ -121,7 +121,7 @@ export function ProductCard({
               })
             }
             aria-label={`Add ${p.name} to cart`}
-            className="absolute bottom-3 right-3 z-10 grid size-10 place-items-center rounded-full bg-navy text-paper shadow-[0_6px_16px_rgba(23,32,59,0.25)] transition-[background-color,transform] duration-200 hover:bg-sky-ink active:scale-95 sm:size-11"
+            className="absolute bottom-3 right-3 z-10 grid size-10 place-items-center rounded-full bg-[linear-gradient(135deg,var(--color-pink),var(--color-orange))] text-night shadow-[0_6px_20px_-4px_rgba(255,79,216,0.8)] transition-transform duration-200 hover:scale-105 active:scale-95 sm:size-11"
           >
             <Plus className="size-5" strokeWidth={2.2} />
           </button>

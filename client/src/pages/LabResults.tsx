@@ -38,7 +38,7 @@ export default function LabResults() {
             value={term}
             onChange={(e) => setTerm(e.target.value)}
             placeholder="Search a strain or product"
-            className="h-12 w-full rounded-full border border-paper-3 bg-white/80 pl-11 pr-4 text-[16px] placeholder:text-navy-3 focus:border-navy focus:outline-none focus:ring-4 focus:ring-sky/20"
+            className="h-12 w-full rounded-full border border-paper-3 bg-paper-2 pl-11 pr-4 text-[16px] placeholder:text-navy-3 focus:border-cyan focus:outline-none focus:ring-4 focus:ring-sky/20"
           />
         </label>
       </header>
@@ -87,7 +87,7 @@ export default function LabResults() {
                         href={r.fileUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-navy px-4 text-[14px] font-semibold text-paper transition-colors hover:bg-sky-ink"
+                        className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-[14px] font-semibold text-cyan shadow-[inset_0_0_0_1.5px_rgba(45,226,255,0.55)] transition-[background-color,color,box-shadow] hover:bg-cyan hover:text-night hover:shadow-[0_0_24px_-6px_rgba(45,226,255,0.9)]"
                         aria-label={`View ${r.title} certificate of analysis`}
                       >
                         <FileText className="size-4" aria-hidden />

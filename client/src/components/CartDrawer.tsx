@@ -117,7 +117,7 @@ export function CartDrawer() {
       {open && (
         <div className="fixed inset-0 z-[70]">
           <motion.div
-            className="absolute inset-0 bg-navy/35 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-night/70 backdrop-blur-[3px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -176,7 +176,7 @@ export function CartDrawer() {
                     </p>
                     <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-3">
                       <div
-                        className="h-full rounded-full bg-sky transition-[width] duration-500 ease-apple"
+                        className="h-full rounded-full bg-[linear-gradient(90deg,var(--color-cyan),var(--color-pink))] transition-[width] duration-500 ease-apple"
                         style={{ width: `${free.progress * 100}%` }}
                       />
                     </div>

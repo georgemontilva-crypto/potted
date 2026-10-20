@@ -27,7 +27,7 @@ function Gallery({ images, name, strain }: { images: { url: string }[]; name: st
             src={current.url}
             alt={name}
             data-gallery-main
-            className="relative size-full animate-[fade-in_0.35s_ease] object-contain p-[8%] drop-shadow-[0_30px_34px_rgba(23,32,59,0.22)]"
+            className="relative size-full animate-[fade-in_0.35s_ease] object-contain p-[8%] drop-shadow-[0_30px_34px_rgba(0,0,0,0.6)]"
           />
         ) : (
           <NoPhoto name={name} />
